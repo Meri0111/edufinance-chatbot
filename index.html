@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduFinance AI - Chatbot Akademik Bisnis & Akuntansi</title>
+    <style>
+        :root {
+            --primary-color: #1e3a8a; /* Biru Navy khas Akademik */
+            --secondary-color: #f3f4f6;
+            --accent-color: #10b981; /* Hijau Sukses */
+            --text-dark: #1f2937;
+            --text-light: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #e5e7eb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 600px;
+            height: 85vh;
+            background: var(--text-light);
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Header Chatbot */
+        .chat-header {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .chat-header h1 {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+
+        .chat-header p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            font-style: italic;
+        }
+
+        /* Area Pesan Chat */
+        .chat-box {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #f9fafb;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            line-height: 1.5;
+            font-size: 0.95rem;
+            white-space: pre-line; /* Menjaga format enter dan poin-poin */
+        }
+
+        /* Gaya Pesan Dosen/Model */
+        .message.model {
+            background-color: var(--secondary-color);
+            color: var(--text-dark);
+            align-self: flex-start;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        /* Gaya Pesan Mahasiswa/User */
+        .message.user {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        /* Form Input */
+        .chat-form {
+            display: flex;
+            padding: 15px;
+            background: var(--text-light);
+            border-top: 1px solid #e5e7eb;
+            gap: 10px;
+        }
+
+        .chat-form input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .chat-form input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.2);
+        }
+
+        .chat-form button {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            border: none;
+            padding: 0 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .chat-form button:hover {
+            background-color: #172554;
+        }
+
+        /* Petunjuk Topik */
+        .topic-tags {
+            padding: 10px 20px;
+            background: #f3f4f6;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            background: #ddd;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+
+        .tag:hover {
+            background: #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="chat-header">
+        <h1>EduFinance AI</h1>
+        <p>Asisten Akademik & Dosen Pembimbing Virtual Anda</p>
+    </div>
+
+    <div class="chat-box" id="chat-box">
+        <div class="message model">
+Selamat datang di kelas virtual kita. Saya adalah <b>EduFinance AI</b>, dosen pembimbing virtual Anda dalam bidang Akuntansi dan Bisnis.
+
+Fokus diskusi kita meliputi:
+• Akuntansi Dasar & Sistem Informasi Akuntansi
+• Statistika Bisnis & Penelitian Kuantitatif
+• Analisis Data Sederhana & MS Excel untuk Bisnis
+
+Ada materi atau tugas perkuliahan yang sedang membuat Anda kesulitan hari ini? Silakan tanyakan, mari kita bedah bersama langkah demi langkah! Tetap semangat, belajar akuntansi dan bisnis itu logis dan menyenangkan jika kita paham polanya.
+        </div>
+    </div>
+
+    <div class="topic-tags">
+        <span class="tag" onclick="quickAsk('Jelaskan konsep Akuntansi Dasar')">Akuntansi Dasar</span>
+        <span class="tag" onclick="quickAsk('Bagaimana cara kerja SIA?')">Sistem Informasi Akuntansi</span>
+        <span class="tag" onclick="quickAsk('Apa itu uji hipotesis statistika?')">Statistika Bisnis</span>
+        <span class="tag" onclick="quickAsk('Rumus Excel VLOOKUP')">Excel Bisnis</span>
+    </div>
+
+    <form class="chat-form" id="chat-form">
+        <input type="text" id="user-input" placeholder="Ketik pertanyaan akademik Anda di sini..." autocomplete="off" required />
+        <button type="submit">Kirim</button>
+    </form>
+</div>
+
+<script>
+    // DOM Elements
+    const chatForm = document.getElementById('chat-form');
+    const userInput = document.getElementById('user-input');
+    const chatBox = document.getElementById('chat-box');
+
+    // Basis Pengetahuan Simulasi AI (Materi Pembelajaran)
+    const knowledgeBase = {
+        akuntansi: `Mari kita bahas **Akuntansi Dasar**, Saudara. Konsep paling mendasar yang wajib Anda kuasai adalah **Persamaan Dasar Akuntansi**, yaitu:
+
+$$Aset = Liabilitas + Ekuitas$$
+
+**Penjelasan Istilah Teknis:**
+1. *Aset (Harta)*: Semua sumber daya ekonomi yang dimiliki perusahaan (contoh: Kas, Piutang, Peralatan).
+2. *Liabilitas (Utang)*: Kewajiban ekonomi kepada pihak ketiga.
+3. *Ekuitas (Modal)*: Hak pemilik atas kekayaan perusahaan.
+
+**Contoh Kasus Sederhana:**
+Perusahaan konsultan "Maju Jaya" baru didirikan. Pemilik menyetor modal tunai sebesar Rp10.000.000. Bagaimana pencatatannya?
+• Langkah 1: Akun **Kas (Aset)** bertambah di sisi Debit sebesar Rp10.000.000.
+• Langkah 2: Akun **Modal (Ekuitas)** bertambah di sisi Kredit sebesar Rp10.000.000.
+Kedua sisi tetap seimbang (*balance*).
+
+Jika Anda sedang kesulitan memahami jurnal debit-kredit, jangan berkecil hati. Kuncinya adalah latihan konsisten. Mari coba sebutkan satu transaksi ekonomi, nanti kita analisis bersama debet-kreditnya!`,
+
+        sia: `Baik, mari kita bedah materi **Sistem Informasi Akuntansi (SIA)**. 
+
+SIA adalah sebuah sistem yang bertugas mengumpulkan, mencatat, menyimpan, dan memproses data keuangan untuk menghasilkan informasi bagi pengambil keputusan.
+
+**Siklus Transaksi Utama dalam SIA:**
+1. *Siklus Pendapatan*: Kejadian terkait penjualan barang/jasa dan penerimaan kas.
+2. *Siklus Pengeluaran*: Kejadian terkait pembelian bahan baku/aset dan pengeluaran kas.
+3. *Siklus Produksi*: Pengubahan bahan baku menjadi barang jadi.
+
+**Contoh Kasus Sederhana:**
+Saat kasir di supermarket memindai (*scan*) barcode produk, SIA secara otomatis:
+• Mengurangi jumlah stok/persediaan di database gudang.
+• Mencatat penambahan pada jurnal pendapatan penjualan secara *real-time*.
+
+Pemahaman SIA menggabungkan logika bisnis dan teknologi. Jika materi ini terasa abstrak, bayangkan saja Alur Dokumen (Flowchart)-nya terlebih dahulu. Anda pasti bisa menguasainya!`,
+
+        statistika: `Mari kita pelajari konsep **Statistika Bisnis**, khususnya mengenai **Uji Hipotesis**.
+
+Dalam penelitian kuantitatif, kita sering menguji asumsi untuk mengambil keputusan bisnis yang valid, bukan sekadar tebakan instan.
+
+**Istilah Teknis Penting:**
+• *Hipotesis Nol ($H_0$)*: Pernyataan yang menyatakan tidak ada pengaruh/perbedaan.
+• *Hipotesis Alternatif ($H_a$)*: Pernyataan yang menyatakan adanya pengaruh/perbedaan (apa yang ingin dibuktikan peneliti).
+• *p-value (Signifikansi)*: Nilai probabilitas untuk menolak atau menerima $H_0$.
+
+**Cara Interpretasi Data Sederhana:**
+Misalkan Anda menguji pengaruh "Biaya Iklan" terhadap "Volume Penjualan" menggunakan software olah data. Hasil output menunjukkan nilai *p-value* sebesar **0,02**.
+• *Aturan Baku*: Jika *p-value* < 0,05 (alpha 5%), maka **$H_0$ Ditolak** dan **$H_a$ Diterima**.
+• *Kesimpulan Bisnis*: Artinya, Biaya Iklan terbukti berpengaruh secara signifikan terhadap Volume Penjualan produk Anda.
+
+Statistika bukan sekadar menghitung rumus, melainkan membaca cerita di balik angka tersebut. Jangan alergi dengan angka ya, mari kita pelajari pelan-pelan.`,
+
+        excel: `Pilihan topik yang sangat praktis! **Microsoft Excel** adalah senjata wajib di dunia bisnis dan akuntansi. Mari kita bahas fungsi legendaris: **VLOOKUP**.
+
+**Kegunaan:** Mencari suatu nilai di kolom pertama sebuah tabel data, lalu mengambil nilai dari kolom lain pada baris yang sama.
+
+**Sintaks/Rumus Runtut:**
+\`=VLOOKUP(nilai_yang_dicari, tabel_referensi, nomor_kolom, [range_lookup])\`
+
+**Contoh Kasus Sederhana:**
+Anda punya Tabel Gaji Karyawan. Di sel A2 Anda mengetik Nomor Induk Karyawan (NIK). Anda ingin nama karyawan muncul otomatis di sel B2 berdasarkan master data di tabel koordinat D1:F10.
+• Rumusnya: \`=VLOOKUP(A2, D1:F10, 2, FALSE)\`
+• Angka 2 berarti nama karyawan terletak di kolom ke-2 dari tabel master data Anda.
+
+Silakan langsung praktikkan di komputer Anda sekarang. Jika rumusnya memunculkan pesan error seperti \`#N/A\`, jangan panik! Periksa kembali apakah tipe data pencariannya sudah sama. Tetap dicoba, Excel adalah soal kebiasaan jemari Anda.`,
+
+        kuantitatif: `Mari kita bahas mengenai **Metode Penelitian Kuantitatif**. 
+
+Penelitian kuantitatif berfokus pada pengumpulan dan analisis data berupa angka yang nantinya diolah dengan metode statistika untuk menguji teori yang ada.
+
+**Langkah Penyelesaian Penelitian Kuantitatif secara Runtut:**
+1. **Identifikasi Masalah**: Menentukan fenomena bisnis yang ingin diteliti (misal: penurunan kinerja karyawan).
+2. **Studi Literatur & Hipotesis**: Mencari teori pendukung lalu merumuskan dugaan sementara.
+3. **Pengumpulan Data**: Menyebarkan kuesioner terstruktur atau mengumpulkan laporan keuangan perusahaan.
+4. **Analisis Data**: Menguji data menggunakan regresi linear atau uji-t.
+5. **Interpretasi & Kesimpulan**: Menjelaskan arti angka hasil uji statistika tersebut bagi kebijakan manajerial bisnis.
+
+Metodologi penelitian ini seperti membuat cetak biru sebuah bangunan. Jika fondasi logikanya kuat, penelitian Anda akan berjalan lancar. Bagian mana dari metodologi ini yang ingin Anda diskusikan lebih dalam?`
+    };
+
+    // Event listener untuk form submit
+    chatForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        handleUserMessage();
+    });
+
+    // Fungsi untuk tombol pintasan
+    function quickAsk(text) {
+        userInput.value = text;
+        handleUserMessage();
+    }
+
+    // Pemrosesan pesan user
+    function handleUserMessage() {
+        const text = userInput.value.trim();
+        if (!text) return;
+
+        // 1. Tampilkan pesan user di chat box
+        appendMessage('user', text);
+        userInput.value = '';
+
+        // 2. Tampilkan efek "Berpikir..." dari dosen AI
+        const thinkingId = appendMessage('model', 'Sedang membaca pertanyaan Anda, mohon tunggu sebentar...');
+
+        // 3. Simulasikan respon delay (1 detik) seolah AI sedang menganalisis
+        setTimeout(() => {
+            const botResponse = generateAIResponse(text);
+            updateMessage(thinkingId, botResponse);
+        }, 1000);
+    }
+
+    // Logika Berbasis Aturan (Simulasi Inteligensi EduFinance AI)
+    function generateAIResponse(input) {
+        const query = input.toLowerCase();
+
+        // Cek Kata Kunci Akuntansi
+        if (query.includes('akuntansi') || query.includes('debit') || query.includes('kredit') || query.includes('aset') || query.includes('neraca')) {
+            return knowledgeBase.akuntansi;
+        }
+        // Cek Kata Kunci Sistem Informasi Akuntansi
+        if (query.includes('sia') || query.includes('sistem informasi') || query.includes('siklus') || query.includes('flowchart')) {
+            return knowledgeBase.sia;
+        }
+        // Cek Kata Kunci Statistika / Analisis Data
+        if (query.includes('statistika') || query.includes('hipotesis') || query.includes('p-value') || query.includes('uji') || query.includes('signifikan')) {
+            return knowledgeBase.statistika;
+        }
+        // Cek Kata Kunci Excel
+        if (query.includes('excel') || query.includes('vlookup') || query.includes('rumus') || query.includes('formula')) {
+            return knowledgeBase.excel;
+        }
+        // Cek Kata Kunci Kuantitatif
+        if (query.includes('kuantitatif') || query.includes('penelitian') || query.includes('metode') || query.includes('kuesioner')) {
+            return knowledgeBase.kuantitatif;
+        }
+        // Penanganan jika mahasiswa menyapa
+        if (query.includes('halo') || query.includes('hai') || query.includes('selamat pagi') || query.includes('assalamualaikum')) {
+            return `Selamat datang kembali di kelas tutorial saya. Senang bisa berinteraksi dengan Anda kembali. 
+
+Silakan sampaikan topik akademik seputar ekonomi, akuntansi, atau statistika yang ingin kita bedah bersama hari ini.`;
+        }
+        // Aturan Tambahan: Jika di luar topik akademik akuntansi/bisnis
+        return `Pertanyaan yang menarik, Saudara. Namun, mohon maaf, pertanyaan tersebut tampaknya berada **di luar fokus akademik** bimbingan kita kali ini (Akuntansi, Bisnis, Statistika, dan Excel). 
+
+Sebagai dosen pembimbing Anda, saya menyarankan agar kita memfokuskan sisa waktu diskusi ini untuk mempertajam pemahaman materi kuliah Anda. Apakah ada kesulitan di materi akuntansi dasar atau olah data statistika yang bisa saya bantu jelaskan ulang?`;
+    }
+
+    // Fungsi Pembantu: Menambahkan element pesan ke DOM
+    function appendMessage(role, text) {
+        const messageElement = document.createElement('div');
+        const uniqueId = 'msg-' + Date.now() + Math.floor(Math.random() * 1000);
+        
+        messageElement.id = uniqueId;
+        messageElement.className = `message ${role}`;
+        messageElement.textContent = text;
+        
+        chatBox.appendChild(messageElement);
+        chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll ke bawah
+        
+        return uniqueId;
+    }
+
+    // Fungsi Pembantu: Memperbarui isi pesan (untuk efek loading selesai)
+    function updateMessage(id, newText) {
+        const messageElement = document.getElementById(id);
+        if (messageElement) {
+            // Menggunakan innerHTML khusus agar format bold (**) dan line break bisa terbaca rapi
+            let formattedText = newText
+                .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>') // Mengubah **text** jadi <b>text</b>
+                .replace(/\`(.*?)\`/g, '<code>$1</code>'); // Mengubah `code` jadi <code>code</code>
+            
+            messageElement.innerHTML = formattedText;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    }
+</script>
+
+</body>
+</html>
